@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://activiti.org/bpmn20">
+    <process id="TestApprovalProcess" name="Test Approval Process"
+             isExecutable="true">
+
+        <startEvent id="theStart"/>
+
+        <userTask id="emailOnly" name="Email only task">
+            <documentation>Dedicated task for storing correspondence</documentation>
+        </userTask>
+
+        <userTask id="termination" name="Terminate">
+            <documentation>Terminate an approved protocol</documentation>
+        </userTask>
+
+        <userTask id="suspension" name="Suspend">
+            <documentation>Suspend an approved protocol</documentation>
+        </userTask>
+
+        <userTask id="reinstatement" name="Reinstate">
+            <documentation>Reinstate a suspended protocol</documentation>
+        </userTask>
+
+        <userTask id="withdrawal" name="Withdraw">
+            <documentation>Withdraw a protocol that had been returned to PI.</documentation>
+        </userTask>
+
+        <userTask id="adverseEvent" name="Adverse Event">
+            <documentation>Approve Adverse Event Task</documentation>
+        </userTask>
+
+        <userTask id="preliminaryReview" name="Preliminary Review">
+            <documentation>Preliminary review task</documentation>
+        </userTask>
+
+        <userTask id="distribution" name="Distribute">
+            <documentation>IACUC ADMIN distribute the protocol</documentation>
+        </userTask>
+
+        <userTask id="subCommittee" name="Sub-Committee Review">
+            <documentation>Sub-Committee Review Protocol</documentation>
+        </userTask>
+
+        <userTask id="kaput" name="Kaput">
+            <documentation>Import old status</documentation>
+        </userTask>
+
+        <subProcess id="designatedReview" name="Designated Reviewers">
+
+            <startEvent id="startSubProc"/>
+            <sequenceFlow sourceRef="startSubProc" targetRef="assigneeReview"></sequenceFlow>
+
+            <userTask id="assigneeReview" name="Designate reviewer as ${assignee}"
+                      activiti:assignee="${assignee}">
+                <documentation>Designated user review task</documentation>
+                <multiInstanceLoopCharacteristics
+                        isSequential="false">
+                    <loopDataInputRef>REVIEWER_LIST</loopDataInputRef>
+                    <inputDataItem name="assignee"/>
+                </multiInstanceLoopCharacteristics>
+            </userTask>
+
+            <sequenceFlow sourceRef="assigneeReview" targetRef="endSubProcess"/>
+            <endEvent id="endSubProcess"/>
+
+        </subProcess>
+
+        <userTask id="adminReview" name="Administrator Review">
+            <documentation>Administrator review task</documentation>
+        </userTask>
+
+        <userTask id="returnToPI" name="Return to PI">
+            <documentation>Return to PI Task</documentation>
+        </userTask>
+
+        <userTask id="finalApproval" name="Approve">
+            <documentation>IACUC Committee Final Approval Task</documentation>
+        </userTask>
+
+        <exclusiveGateway id="startGateway" name="Start Gateway"/>
+        
+        <exclusiveGateway id="preliminaryReviewOutputGateway" name="Preliminary review output gateway"/>
+        <exclusiveGateway id="distributeOutputGateway" name="Distribute protocol output gateway"/>
+        <exclusiveGateway id="designatedReviewOutputGrateway" name="Designated reviewer output gateway"/>
+        <exclusiveGateway id="adminReviewGateway" name="Administrator review output gateway"/>
+		<exclusiveGateway id="subCommitteeReviewGateway" name="Sub-Committee review output gateway"/>
+
+        <sequenceFlow id="startFlow" sourceRef="theStart" targetRef="startGateway"></sequenceFlow>
+
+        <sequenceFlow id="gw1" sourceRef="startGateway" targetRef="preliminaryReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 1}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="gw2" sourceRef="startGateway" targetRef="adverseEvent">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 2}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a01" sourceRef="startGateway" targetRef="termination">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a02" sourceRef="startGateway" targetRef="suspension">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 4}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a03" sourceRef="startGateway" targetRef="withdrawal">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 5}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a04" sourceRef="startGateway" targetRef="emailOnly">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 6}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a05" sourceRef="startGateway" targetRef="reinstatement">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 7}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="a06" sourceRef="startGateway" targetRef="kaput">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${START_GATEWAY == 8}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="preliminaryReview" targetRef="preliminaryReviewOutputGateway"/>
+
+        <sequenceFlow id="flow01" sourceRef="preliminaryReviewOutputGateway" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${RETURN_TO_PI == false}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow02" sourceRef="preliminaryReviewOutputGateway"
+                      targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${RETURN_TO_PI == true}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="distribution" targetRef="distributeOutputGateway"/>
+
+        <sequenceFlow id="flow2" sourceRef="distributeOutputGateway" targetRef="subCommittee">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DISTRIBUTE_SELECTION == 2}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow3" sourceRef="distributeOutputGateway" targetRef="designatedReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DISTRIBUTE_SELECTION == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow4" sourceRef="distributeOutputGateway" targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DISTRIBUTE_SELECTION == 98}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id="flow5" sourceRef="distributeOutputGateway" targetRef="finalApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DISTRIBUTE_SELECTION == 99}]]></conditionExpression>
+        </sequenceFlow>
+
+		<sequenceFlow sourceRef="subCommittee" targetRef="subCommitteeReviewGateway"></sequenceFlow>
+        <sequenceFlow sourceRef="subCommitteeReviewGateway" targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${SUB_COMMITTEE_REVIEW_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="subCommitteeReviewGateway" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${SUB_COMMITTEE_REVIEW_OUTPUT == 2}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="subCommitteeReviewGateway" targetRef="finalApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${SUB_COMMITTEE_REVIEW_OUTPUT == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+
+        <sequenceFlow sourceRef="designatedReview" targetRef="designatedReviewOutputGrateway"/>
+
+        <sequenceFlow sourceRef="designatedReviewOutputGrateway" targetRef="adminReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DESIGNATED_REVIEW_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="designatedReviewOutputGrateway" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DESIGNATED_REVIEW_OUTPUT == 2}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="designatedReviewOutputGrateway" targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${DESIGNATED_REVIEW_OUTPUT == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+
+		<sequenceFlow sourceRef="adminReview" targetRef="adminReviewGateway" />
+        <sequenceFlow sourceRef="adminReviewGateway" targetRef="finalApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ADMIN_REVIEW_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="adminReviewGateway" targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ADMIN_REVIEW_OUTPUT == 2}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="adminReviewGateway" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${ADMIN_REVIEW_OUTPUT == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+
+        <sequenceFlow sourceRef="emailOnly" targetRef="theEnd"/>
+        <sequenceFlow sourceRef="adverseEvent" targetRef="theEnd"/>
+        <sequenceFlow sourceRef="termination" targetRef="theEnd"/>
+        <sequenceFlow sourceRef="suspension" targetRef="theEnd"/>
+        <sequenceFlow sourceRef="reinstatement" targetRef="theEnd"/>
+        <sequenceFlow sourceRef="withdrawal" targetRef="theEnd"/>
+
+        <sequenceFlow sourceRef="kaput" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"></endEvent>
+
+
+        <userTask id="undoReturnToPI" name="UndoReturnToPI">
+            <documentation>Cancel Return to PI Task</documentation>
+        </userTask>
+
+        <boundaryEvent id="undoReturnToPITimerBoundary"
+                       name="Undo ReturnToPI timeout"
+                       cancelActivity="true"
+                       attachedToRef="undoReturnToPI">
+            <timerEventDefinition>
+                <timeDuration>PT3M1S</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+
+        <serviceTask id="releaseReturnToPI"
+                     name="Release Return to PI"
+                     activiti:expression="#{middleMan.releaseReturnToPI(execution)}">
+        </serviceTask>
+
+        <userTask id="undoApproval" name="UndoApproval">
+            <documentation>Cancel Approval Task</documentation>
+        </userTask>
+
+        <boundaryEvent id="undoApprovalTimerBoundary"
+                       name="Undo approval timeout"
+                       cancelActivity="true"
+                       attachedToRef="undoApproval">
+            <timerEventDefinition>
+                <timeDuration>PT3M1S</timeDuration>
+            </timerEventDefinition>
+        </boundaryEvent>
+
+        <serviceTask id="releaseApproval"
+                     name="Release approval"
+                     activiti:expression="#{middleMan.releaseApproval(execution)}">
+        </serviceTask>
+
+        <exclusiveGateway id="returnToPIOutputGateway" name="Return to PI output gateway"/>
+        <exclusiveGateway id="approvalOutputGateway" name="Approval output gateway"/>
+
+        <!-- after returnToPI, it can go 1) wait; 2) directly release; 3) immediately end -->
+        <sequenceFlow sourceRef="returnToPI" targetRef="returnToPIOutputGateway" />
+
+        <sequenceFlow sourceRef="returnToPIOutputGateway" targetRef="undoReturnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${RETURNTOPI_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="returnToPIOutputGateway" targetRef="releaseReturnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${RETURNTOPI_OUTPUT == 2}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="returnToPIOutputGateway" targetRef="theEnd">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${RETURNTOPI_OUTPUT == 3}]]></conditionExpression>
+        </sequenceFlow>
+        <!-- after undo return to PI, it can go ... -->
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="preliminaryReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 11}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="subCommittee">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 22}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="adminReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 44}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="returnToPI">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 55}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="designatedReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 33}]]></conditionExpression>
+        </sequenceFlow>
+        <!-- cancel undo return to PI task and immediately end process -->
+        <sequenceFlow sourceRef="undoReturnToPI" targetRef="theEnd">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_RETURNTOPI_OUTPUT == 999}]]></conditionExpression>
+        </sequenceFlow>
+
+        <!-- after approval, it can go 1) wait; 2) directly release; 3) immediately end -->
+        <sequenceFlow sourceRef="finalApproval" targetRef="approvalOutputGateway" />
+        <sequenceFlow sourceRef="approvalOutputGateway" targetRef="undoApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${APPROVAL_OUTPUT == 1}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="approvalOutputGateway" targetRef="releaseApproval">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${APPROVAL_OUTPUT == 2}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow sourceRef="approvalOutputGateway" targetRef="theEnd">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${APPROVAL_OUTPUT == 3}]]></conditionExpression>
+        </sequenceFlow>
+
+        <!-- after undo approval, it can go ... -->
+        <sequenceFlow sourceRef="undoApproval" targetRef="adminReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_APPROVAL_OUTPUT == 44}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="undoApproval" targetRef="designatedReview">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_APPROVAL_OUTPUT == 33}]]></conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow sourceRef="undoApproval" targetRef="distribution">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${UNDO_APPROVAL_OUTPUT == 11}]]></conditionExpression>
+        </sequenceFlow>
+
+        <!-- undo return to PI timeout, it goes to release return to PI -->
+        <sequenceFlow sourceRef="undoReturnToPITimerBoundary" targetRef="releaseReturnToPI"/>
+        <sequenceFlow sourceRef="releaseReturnToPI" targetRef="theEnd"/>
+
+        <!-- undo approval timeout, it goes to release approval -->
+        <sequenceFlow sourceRef="undoApprovalTimerBoundary" targetRef="releaseApproval"/>
+        <sequenceFlow sourceRef="releaseApproval" targetRef="theEnd"/>
+    </process>
+
+
+</definitions>
