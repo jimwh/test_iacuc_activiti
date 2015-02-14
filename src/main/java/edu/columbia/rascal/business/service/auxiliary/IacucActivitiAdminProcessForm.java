@@ -201,6 +201,14 @@ public class IacucActivitiAdminProcessForm {
 		this.withoutActionReviewerList = partReviewerList;
 	}
 
+	private boolean validateEndDate=false;
+	public void setValidateEndDate(boolean bool) {
+		this.validateEndDate=bool;
+	}
+	public boolean validateEndDate() {
+		return this.validateEndDate;
+	}
+	
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("fm[reviewType=").append(this.reviewType)

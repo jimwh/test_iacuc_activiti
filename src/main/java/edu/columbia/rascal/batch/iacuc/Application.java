@@ -23,18 +23,7 @@ public class Application {
         MiddleMan mm = ctx.getBean(MiddleMan.class);
         log.info("middelMan start...");
 
-        // mm.testTimedReleaseApproval();
-        // mm.testUndoApprovalBackToSubprocess();
-        //
-        // mm.testUndoReturnToPI();
-        mm.testUndoReturnToPIBackToSubcommittee();
-        // mm.testTimedReleaseReturnToPI();
-        // mm.testReturnToPiImmediatelyRelease();
-        // mm.testReturnToPiGoEnd();
-        log.info("middelMan back from test...");
-
-        try {
-            Thread.sleep(300000);
+        try {Thread.sleep(300);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

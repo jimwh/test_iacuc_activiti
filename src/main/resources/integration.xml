@@ -23,7 +23,9 @@
         <property name="dataSource" ref="transactionAwareDataSource"/>
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="false"/>
-        <property name="deploymentResources" value="classpath*:/TestApprovalProcess.bpmn20.xml" />
+        <!--
+        <property name="deploymentResources" value="classpath*:/IacucApprovalProcess.bpmn20.xml" />
+        -->
         <property name="jobExecutorActivate" value="true"/>
         <property name="history" value="full"/>
 

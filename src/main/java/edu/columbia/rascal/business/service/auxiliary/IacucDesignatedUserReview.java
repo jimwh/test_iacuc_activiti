@@ -27,9 +27,6 @@ public class IacucDesignatedUserReview implements Serializable {
     private Date actionDate;
     private String actionNote;
 
-    public void setActionDate(Date date) {
-        this.actionDate=date;
-    }
     public String getActionNote() {
         return this.actionNote;
     }
@@ -58,15 +55,20 @@ public class IacucDesignatedUserReview implements Serializable {
     	return this.action != null;
     }
     
+    // The task name:
+    // Designated Reviewer Approval
+    // Designated Reviewer Request Full Review
+    // Designated Reviewer Hold
+    // it will be called when complete task 
     public String getDisplayAction() {
         if (IacucApprovalType.APPROVE.isType(action)) {
-            return "Designated User Approval";
+            return "Designated Reviewer Approval";
         } else if (IacucApprovalType.HOLD.isType(action)) {
-            return "Designated User Hold";
+            return "Designated Reviewer Hold";
         } else if (IacucApprovalType.FULLCOMMITTEE.isType(action)) {
-            return "Designated User Request Full Committee Review";
+            return "Designated Reviewer Request Full Review";
         } else {
-            return "Designated User has no action";
+            return "Designated Reviewr No Action";
         }
     }
     public Date getActionDate() {
@@ -74,9 +76,7 @@ public class IacucDesignatedUserReview implements Serializable {
     }
 
     public void applyAction() {
-        if(this.actionDate==null) {
-            this.actionDate = new Date();
-        }
+        this.actionDate = new Date();
     }
 
 
