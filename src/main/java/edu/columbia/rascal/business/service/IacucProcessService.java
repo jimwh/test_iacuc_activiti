@@ -21,9 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import edu.columbia.rascal.business.service.auxiliary.IacucActivitiAdminProcessForm;
 import edu.columbia.rascal.business.service.auxiliary.IacucCorrespondence;
-import edu.columbia.rascal.business.service.auxiliary.IacucDesignatedUserReview;
 import edu.columbia.rascal.business.service.auxiliary.IacucDistributeSubcommitteeForm;
 import edu.columbia.rascal.business.service.auxiliary.IacucStatus;
 import edu.columbia.rascal.business.service.auxiliary.IacucTaskForm;
@@ -149,6 +147,7 @@ class IacucProcessService {
         return iacucProcessQueryService.hasTaskForAssignee(protocolId, userId);
     }
 
+    /*
     @Transactional
     boolean completeTaskByAssignee(String protocolId, String assignee, IacucDesignatedUserReview detail) {
         if (detail == null) {
@@ -185,7 +184,7 @@ class IacucProcessService {
         completeTask(task, assignee, map);
         return true;
     }
-    
+    */
 
     @Transactional
     boolean completeAdverseEventApprovalTask(String adverseEventId,
@@ -230,14 +229,15 @@ class IacucProcessService {
     /**
      * Cancel all assignee tasks and go back to distribution task
      */
-
+/*
     boolean cancelReviewersTaskGoRedistribute(String protocolId, String userId, IacucActivitiAdminProcessForm form) {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put(DESIGNATED_REVIEW_OUTPUT, DESIGNATED_REVIEW_GO_DISTRIBUTE);
         return adminStepIntoTask(protocolId, userId, map, form);
     }
+*/
 
-
+    /*
     @Transactional
     private boolean adminStepIntoTask(String protocolId, String userId, Map<String, Object> map, IacucActivitiAdminProcessForm form) {
         List<Task> taskList = iacucProcessQueryService.getDesignatedReviewerTasksByBizKey(protocolId);
@@ -267,6 +267,8 @@ class IacucProcessService {
         }
         return true;
     }
+    */
+
 
     @Transactional
     String attachSnapshotToTask(String protocolId, String taskDefKey, InputStream content) {
