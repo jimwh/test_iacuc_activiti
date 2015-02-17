@@ -50,16 +50,6 @@ public class MiddleMan {
         return processService.startProtocolProcess(protocolId, userId, map);
     }
 
-    private boolean completeReturnToPI(String protocolId, String userId) {
-        log.info("return-2-pi go undoReturnToPI");
-        IacucTaskForm taskForm = new IacucTaskForm();
-        taskForm.setBizKey(protocolId);
-        taskForm.setAuthor(userId);
-        taskForm.setTaskDefKey(IacucStatus.RETURNTOPI.taskDefKey());
-        taskForm.setTaskName(IacucStatus.RETURNTOPI.statusName());
-        processService.completeTaskByTaskForm(taskForm);
-        return true;
-    }
 
     public List<String> getCurrentTaskDefKey(String protocolId) {
         return processService.getCurrentTaskDefKey(protocolId);

@@ -23,10 +23,6 @@ public class Application {
         MiddleMan mm = ctx.getBean(MiddleMan.class);
         log.info("middelMan start...");
 
-        mm.deleteProcessByBizKey("3850", "dude");
-        mm.deleteProcessByBizKey("3900", "dude");
-        mm.deleteProcessByBizKey("3950", "dude");
-
         log.info("middelMan done...");
         SpringApplication.exit(ctx);
     }

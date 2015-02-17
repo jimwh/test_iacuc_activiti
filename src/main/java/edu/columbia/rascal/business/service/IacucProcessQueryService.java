@@ -149,23 +149,6 @@ class IacucProcessQueryService {
         return query != null ? query.singleResult() : null;
     }
 
-    List<HistoricTaskInstance> getHistoricTaskInstanceByBizKey(String bizKey) {
-    	Assert.notNull(bizKey, "undefined bizKey");
-        
-        // if taskDeleteReason="deleted", that task was closed by activiti.
-        // if taskDeleteReason="completed", that task was closed by user action
-        HistoricTaskInstanceQuery query = historyService
-                .createHistoricTaskInstanceQuery()
-                .processDefinitionKey(IacucProcessService.ProtocolProcessDefKey)
-                .processInstanceBusinessKey(bizKey)
-                .finished()
-                .taskDeleteReason("completed")
-                .includeTaskLocalVariables()
-                .orderByHistoricTaskInstanceEndTime()
-                .desc();
-        return query != null ? query.list() : null;
-    }
-
     List<HistoricTaskInstance> getHistoricTaskInstanceByBizKeyAndProcId(String bizKey, String procId) {
     	Assert.notNull(bizKey, "undefined bizKey");
     	Assert.notNull(procId, "undefined processInstanceId");
