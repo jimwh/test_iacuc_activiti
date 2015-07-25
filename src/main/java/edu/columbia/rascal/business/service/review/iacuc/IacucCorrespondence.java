@@ -1,4 +1,4 @@
-package edu.columbia.rascal.business.service.auxiliary;
+package edu.columbia.rascal.business.service.review.iacuc;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("StringBufferReplaceableByString")
 public class IacucCorrespondence {
 
     private String id;
@@ -84,8 +85,7 @@ public class IacucCorrespondence {
         if (StringUtils.isBlank(this.id)) return false;
         if (!isValidFrom()) return false;
         if (!isValidRecipient()) return false;
-        if (!isValidSubject()) return false;
-        return true;
+        return isValidSubject();
     }
 
     public String getRecipient() {
@@ -122,7 +122,7 @@ public class IacucCorrespondence {
     }
 
     public boolean recipientContains(String uni) {
-        return this.recipient == null ? false : this.recipient.contains(uni);
+        return this.recipient != null && this.recipient.contains(uni);
     }
 
     public String getCarbonCopy() {
@@ -134,7 +134,7 @@ public class IacucCorrespondence {
     }
 
     public boolean carbonCopyContains(String uni) {
-        return this.carbonCopy == null ? false : this.carbonCopy.contains(uni);
+        return this.carbonCopy != null && this.carbonCopy.contains(uni);
     }
 
     // save data to activity table
@@ -152,11 +152,13 @@ public class IacucCorrespondence {
         } else if (StringUtils.isBlank(subject)) {
         	log.error("empty subject");
             return map;
-        } else if (StringUtils.isBlank(text)) {
+        } 
+        /* allow empty body 
+        else if (StringUtils.isBlank(text)) {
         	log.error("empty text");
             return map;
         } 
-
+		*/
         map.put("id", id);
         map.put("from", from);
         map.put("recipient", recipient);
@@ -199,10 +201,13 @@ public class IacucCorrespondence {
             bool = false;
         }
         text = map.get("text");
+        /*
+        allow empty body per request
         if( text==null) {
             log.error("no body");
             bool = false;
         }
+        */
         String jodaDateTimeString=map.get("creationDate");
         if (jodaDateTimeString != null) {
             creationDate = new DateTime(jodaDateTimeString).toDate();

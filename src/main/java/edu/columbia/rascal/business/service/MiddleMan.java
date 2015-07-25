@@ -1,7 +1,6 @@
 package edu.columbia.rascal.business.service;
 
-import edu.columbia.rascal.business.service.auxiliary.*;
-
+import edu.columbia.rascal.business.service.review.iacuc.IacucTaskForm;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,11 +30,22 @@ public class MiddleMan {
     @Resource
     private RuntimeService runtimeService;
 
+    @Resource
+    private IacucProtocolHeaderService headerService;
+
     @Autowired
     public MiddleMan(JdbcTemplate jt) {
         this.jdbcTemplate = jt;
     }
 
+
+    public void suspendProtocol(String protocolId) {
+        headerService.suspendProtocolByHeaderId(protocolId);
+    }
+
+    public void activateProtocol(String protocolId) {
+        headerService.activateProtocolByHeaderId(protocolId);
+    }
 
     private boolean submitProtocol(String protocolId, String userId) {
         if (processService.isProtocolProcessStarted(protocolId)) {
@@ -51,17 +61,12 @@ public class MiddleMan {
     }
 
 
-    public List<String> getCurrentTaskDefKey(String protocolId) {
-        return processService.getCurrentTaskDefKey(protocolId);
-    }
 
     public boolean hasTask(String protocolId, String taskDefKey) {
         return processService.hasTaskByTaskDefKey(protocolId, taskDefKey);
     }
 
-    public boolean hasTaskForReviewer(String protocolId, String userId) {
-        return processService.hasTaskForAssignee(protocolId, userId);
-    }
+
 
     public void deleteProcessByBizKey(String protocolId, String deletedReason) {
         log.info("delete process: bizKey={}, deleteReason={}", protocolId, deletedReason);

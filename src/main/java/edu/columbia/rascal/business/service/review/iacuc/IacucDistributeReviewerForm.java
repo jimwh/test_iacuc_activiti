@@ -1,4 +1,4 @@
-package edu.columbia.rascal.business.service.auxiliary;
+package edu.columbia.rascal.business.service.review.iacuc;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import java.util.Map;
 public class IacucDistributeReviewerForm extends IacucTaskForm {
 
     private static final Logger log= LoggerFactory.getLogger(IacucDistributeReviewerForm.class);
+
     @Override
     public Map<String, Object> getTaskVariables() {
         List<String>reviewerList=getReviewerList();
@@ -27,10 +28,11 @@ public class IacucDistributeReviewerForm extends IacucTaskForm {
             suffix += 1;
             map.put("rv"+suffix, rv);
         }
-
+        /*
         for(Map.Entry<String,Object>me: map.entrySet()) {
             log.info("key={}, value={}", me.getKey(),me.getValue());
         }
+        */
         return map;
     }
 

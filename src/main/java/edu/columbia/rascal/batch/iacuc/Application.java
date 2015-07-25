@@ -22,6 +22,7 @@ public class Application {
         ApplicationContext ctx= SpringApplication.run(Application.class, args);
         MiddleMan mm = ctx.getBean(MiddleMan.class);
         log.info("middelMan start...");
+        mm.suspendProtocol("4901");
 
         log.info("middelMan done...");
         SpringApplication.exit(ctx);

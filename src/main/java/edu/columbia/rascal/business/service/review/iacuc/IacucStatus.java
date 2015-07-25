@@ -1,11 +1,9 @@
-package edu.columbia.rascal.business.service.auxiliary;
+package edu.columbia.rascal.business.service.review.iacuc;
 
-import java.util.HashSet;
-import java.util.Set;
 
 public enum IacucStatus {
 
-    SUBMIT("Submit") {
+    Submit("Submit") {
         @Override
         public String taskDefKey() {
             return "submit";
@@ -25,75 +23,15 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 1;
         }
-    },
-
-    DISTRIBUTE("Distribute") {
-        @Override
-        public String taskDefKey() {
-            return "distribution";
-        }
 
         @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equalsIgnoreCase(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 11;
+        public String getCandidateGroup() {
+            return "";
         }
     },
 
-    SubcommitteeReview("Subcommittee") {
-        @Override
-        public String taskDefKey() {
-            return "subcommittee";
-        }
 
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equalsIgnoreCase(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 1;
-        }
-    },
-
-    ASSIGNEEREVIEW("Designated Reviewer") {
-        @Override
-        public String taskDefKey() {
-            return "assigneeReview";
-        }
-
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equalsIgnoreCase(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 33;
-        }
-    },
-
-    RETURNTOPI("Return to PI") {
+    ReturnToPI("Return to PI") {
         @Override
         public String taskDefKey() {
             return "returnToPI";
@@ -113,9 +51,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 55;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_RETURN_TO_PI,IACUC_CAN_RETURN_COLUMBIA_PROTOCOL_TO_PI";
+        }
     },
 
-    FINALAPPROVAL("Approve") {
+    FinalApproval("Approve") {
         @Override
         public String taskDefKey() {
             return "finalApproval";
@@ -135,10 +78,15 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 66;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_APPROVE_COLUMBIA_PROTOCOL";
+        }
     },
 
 
-    ADVERSEEVENT("AdverseEvent") {
+    AdverseEvent("AdverseEvent") {
         @Override
         public String taskDefKey() {
             return "adverseEvent";
@@ -158,9 +106,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 3;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "";
+        }
     },
 
-    TERMINATE("Terminate") {
+    Terminate("Terminate") {
         @Override
         public String taskDefKey() {
             return "terminateProtocol";
@@ -180,9 +133,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 3;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_TERMINATE_COLUMBIA_PROTOCOL";
+        }
     },
 
-    SUSPEND("Suspend") {
+    Suspend("Suspend") {
         @Override
         public String taskDefKey() {
             return "suspendProtocol";
@@ -202,9 +160,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 4;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_SUSPEND_COLUMBIA_PROTOCOL";
+        }
     },
 
-    WITHDRAW("Withdraw") {
+    Withdraw("Withdraw") {
         @Override
         public String taskDefKey() {
             return "withdrawal";
@@ -223,6 +186,11 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 5;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_WITHDRAW_COLUMBIA_PROTOCOL";
         }
     },
 
@@ -246,9 +214,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 6;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_ADD_CORRESPONDENCE";
+        }
     },
 
-    REINSTATE("Reinstate") {
+    Reinstate("Reinstate") {
         @Override
         public String taskDefKey() {
             return "reinstatement";
@@ -268,34 +241,17 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 7;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REINSTATE_COLUMBIA_PROTOCOL";
+        }
     },
 
-    KAPUT("Kaput") {
+    Kaput("Kaput") {
         @Override
         public String taskDefKey() {
             return "kaput";
-        }
-
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equals(status) ? true : isKaput(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 8;
-        }
-    },
-
-    UndoReturnToPI("Undo Return to PI") {
-        @Override
-        public String taskDefKey() {
-            return "undoReturnToPI";
         }
 
         @Override
@@ -310,8 +266,12 @@ public enum IacucStatus {
 
         @Override
         public int gatewayValue() {
-            // unused
-            return 9;
+            return 8;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "";
         }
     },
 
@@ -336,6 +296,11 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_UNDO_APPROVE_COLUMBIA_PROTOCOL";
+        }
     },
 
     DistributeSubcommittee("Distribute: Subcommittee") {
@@ -358,6 +323,11 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 1;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_DISTRIBUTE_SUB_COMMITTEE_PROTOCOL";
+        }
     },
 
     DistributeReviewer("Distribute: Designated Reviewers") {
@@ -379,6 +349,11 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 2;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_DISTRIBUTE_DE_REVIEWER_PROTOCOL";
         }
     },
 
@@ -403,6 +378,11 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_APPROVE_PROTOCOL";
+        }
     },
     Rv1Hold("Designated Reviewer Hold") {
         @Override
@@ -425,6 +405,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_HOLD_PROTOCOL";
+        }
+
     },
 
     Rv1ReqFullReview("Designated Reviewer Request Full Review") {
@@ -448,6 +434,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_FULL_BOARD_PROTOCOL";
+        }
+
     },
 
     Rv2Approval("Designated Reviewer Approval") {
@@ -471,6 +463,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_APPROVE_PROTOCOL";
+        }
+
     },
 
     Rv2Hold("Designated Reviewer Hold") {
@@ -494,6 +492,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_HOLD_PROTOCOL";
+        }
+
     },
 
     Rv2ReqFullReview("Designated Reviewer Request Full Review") {
@@ -517,6 +521,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_FULL_BOARD_PROTOCOL";
+        }
+
     },
 
     Rv3Approval("Designated Reviewer Approval") {
@@ -540,6 +550,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_APPROVE_PROTOCOL";
+        }
+
     },
     Rv3Hold("Designated Reviewer Hold") {
         @Override
@@ -562,6 +578,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_HOLD_PROTOCOL";
+        }
+
     },
     Rv3ReqFullReview("Designated Reviewer Request Full Review") {
         @Override
@@ -584,6 +606,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_FULL_BOARD_PROTOCOL";
+        }
+
     },
 
     Rv4Approval("Designated Reviewer Approval") {
@@ -604,9 +632,14 @@ public enum IacucStatus {
 
         @Override
         public int gatewayValue() {
-            // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_APPROVE_PROTOCOL";
+        }
+
     },
     Rv4Hold("Designated Reviewer Hold") {
         @Override
@@ -629,6 +662,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_HOLD_PROTOCOL";
+        }
+
     },
     Rv4ReqFullReview("Designated Reviewer Request Full Review") {
         @Override
@@ -651,6 +690,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_FULL_BOARD_PROTOCOL";
+        }
+
     },
     Rv5Approval("Designated Reviewer Approval") {
         @Override
@@ -673,6 +718,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_APPROVE_PROTOCOL";
+        }
+
     },
     Rv5Hold("Designated Reviewer Hold") {
         @Override
@@ -695,6 +746,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_HOLD_PROTOCOL";
+        }
+
     },
     Rv5ReqFullReview("Designated Reviewer Request Full Review") {
         @Override
@@ -717,6 +774,12 @@ public enum IacucStatus {
             // unused
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_REVIEW_FULL_BOARD_PROTOCOL";
+        }
+
     },
 
     AddNote("Add Note") {
@@ -739,73 +802,14 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_ADD_NOTE_PROTOCOL";
+        }
+
     },
 
-    M9Reminder("9 Month Reminder") {
-        @Override
-        public String taskDefKey() {
-            return "m9Reminder";
-        }
-
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equals(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 10;
-        }
-    },
-
-    M6Reminder("6 Month Reminder") {
-        @Override
-        public String taskDefKey() {
-            return "m6Reminder";
-        }
-
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equals(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 10;
-        }
-    },
-
-    M3Reminder("3 Month Reminder") {
-        @Override
-        public String taskDefKey() {
-            return "m3Reminder";
-        }
-
-        @Override
-        public boolean isDefKey(String def) {
-            return this.taskDefKey().equals(def);
-        }
-
-        @Override
-        public boolean isStatus(String status) {
-            return statusName().equals(status);
-        }
-
-        @Override
-        public int gatewayValue() {
-            return 10;
-        }
-    },
 
     SOPreApproveA("Safety Office Pre-approve Appendix-A") {
         @Override
@@ -826,6 +830,11 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_A";
         }
     },
 
@@ -849,6 +858,11 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_A";
+        }
     },
 
     SOPreApproveB("Safety Office Pre-approve Appendix-B") {
@@ -870,6 +884,11 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_B";
         }
     },
 
@@ -893,12 +912,17 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_B";
+        }
     },
 
     SOPreApproveC("Safety Office Pre-approve Appendix-C") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveC";
         }
 
         @Override
@@ -914,13 +938,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_C";
         }
     },
 
     SOHoldC("Safety Office Hold Appendix-C") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldC";
         }
 
         @Override
@@ -936,13 +965,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_C";
         }
     },
 
     SOPreApproveD("Safety Office Pre-approve Appendix-D") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveD";
         }
 
         @Override
@@ -958,13 +992,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_D";
         }
     },
 
     SOHoldD("Safety Office Hold Appendix-D") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldD";
         }
 
         @Override
@@ -980,12 +1019,17 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_D";
         }
     },
     SOPreApproveE("Safety Office Pre-approve Appendix-E") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveE";
         }
 
         @Override
@@ -1001,13 +1045,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_E";
         }
     },
 
     SOHoldE("Safety Office Hold Appendix-E") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldE";
         }
 
         @Override
@@ -1024,11 +1073,17 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_E";
+        }
     },
+
     SOPreApproveF("Safety Office Pre-approve Appendix-F") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveF";
         }
 
         @Override
@@ -1044,13 +1099,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_F";
         }
     },
 
     SOHoldF("Safety Office Hold Appendix-F") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldF";
         }
 
         @Override
@@ -1067,11 +1127,17 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_F";
+        }
     },
+
     SOPreApproveG("Safety Office Pre-approve Appendix-G") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveG";
         }
 
         @Override
@@ -1087,13 +1153,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_G";
         }
     },
 
     SOHoldG("Safety Office Hold Appendix-G") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldG";
         }
 
         @Override
@@ -1110,11 +1181,17 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_G";
+        }
     },
+
     SOPreApproveI("Safety Office Pre-approve Appendix-I") {
         @Override
         public String taskDefKey() {
-            return "soPreApproveB";
+            return "soPreApproveI";
         }
 
         @Override
@@ -1130,13 +1207,18 @@ public enum IacucStatus {
         @Override
         public int gatewayValue() {
             return 10;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_APPROVE_I";
         }
     },
 
     SOHoldI("Safety Office Hold Appendix-I") {
         @Override
         public String taskDefKey() {
-            return "soHoldB";
+            return "soHoldI";
         }
 
         @Override
@@ -1153,69 +1235,103 @@ public enum IacucStatus {
         public int gatewayValue() {
             return 10;
         }
-    };
 
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_HAZMAT_SAFETY_HOLD_I";
+        }
+    },
+
+    Redistribute("Redistribute") {
+        @Override
+        public String taskDefKey() {
+            return "redistribute";
+        }
+
+        @Override
+        public boolean isDefKey(String def) {
+            return this.taskDefKey().equals(def);
+        }
+
+        @Override
+        public boolean isStatus(String status) {
+            return statusName().equals(status);
+        }
+
+        @Override
+        public int gatewayValue() {
+            return 999;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_RE_DISTRIBUTE_COLUMBIA_PROTOCOL";
+        }
+    },
+
+    ExpediteReview("Expedite Review") {
+        @Override
+        public String taskDefKey() {
+            return "expedite";
+        }
+
+        @Override
+        public boolean isDefKey(String def) {
+            return this.taskDefKey().equals(def);
+        }
+
+        @Override
+        public boolean isStatus(String status) {
+            return statusName().equals(status);
+        }
+
+        @Override
+        public int gatewayValue() {
+            return 3;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "IACUC_CAN_EXPEDITE_REVIEW_PROTOCOL";
+        }
+    },
+
+    AnimalOrder("Animal Order") {
+        @Override
+        public String taskDefKey() {
+            return "animalOrder";
+        }
+
+        @Override
+        public boolean isDefKey(String def) {
+            return this.taskDefKey().equals(def);
+        }
+
+        @Override
+        public boolean isStatus(String status) {
+            return statusName().equals(status);
+        }
+
+        @Override
+        public int gatewayValue() {
+            return 999;
+        }
+
+        @Override
+        public String getCandidateGroup() {
+            return "";
+        }
+    };
 
     private String codeName;
 
-    private IacucStatus(String s) {
-        this.codeName = s;
-    }
-
-    private static final Set<String> KaputSet = new HashSet<String>();
-
-    static {
-        KaputSet.add("Release");
-        KaputSet.add("UnRelease");
-        KaputSet.add("Reject");
-        KaputSet.add("Notify");
-        //
-        KaputSet.add("PreApprove");
-        //
-        KaputSet.add("ChgApprovalDate");
-        KaputSet.add("ChgEffectivDate");
-        KaputSet.add("ChgEndDate");
-        KaputSet.add("ChgMeetingDate");
-        //
-        KaputSet.add("FullReviewReq");
-        //
-        KaputSet.add("HazardsApprove");
-        //
-        KaputSet.add("SOPreApproveA");
-        KaputSet.add("SOPreApproveB");
-        KaputSet.add("SOPreApproveC");
-        KaputSet.add("SOPreApproveD");
-        KaputSet.add("SOPreApproveE");
-        KaputSet.add("SOPreApproveF");
-        KaputSet.add("SOPreApproveG");
-        KaputSet.add("SOPreApproveI");
-        KaputSet.add("SOHoldA");
-        KaputSet.add("SOHoldB");
-        KaputSet.add("SOHoldC");
-        KaputSet.add("SOHoldD");
-        KaputSet.add("SOHoldE");
-        KaputSet.add("SOHoldF");
-        KaputSet.add("SOHoldG");
-        KaputSet.add("SOHoldI");
-        //
-        KaputSet.add("VetPreApproveB");
-        KaputSet.add("VetPreApproveC");
-        KaputSet.add("VetPreApproveE");
-        KaputSet.add("VetPreApproveF");
-        KaputSet.add("VetHoldB");
-        KaputSet.add("VetHoldC");
-        KaputSet.add("VetHoldE");
-        KaputSet.add("VetHoldF");
+    private IacucStatus(String str) {
+        this.codeName = str;
     }
 
     public String statusName() {
         return codeName;
     }
-
-    public boolean isKaput(String name) {
-        return KaputSet.contains(name);
-    }
-
     public abstract String taskDefKey();
 
     public abstract boolean isDefKey(String def);
@@ -1223,5 +1339,7 @@ public enum IacucStatus {
     public abstract boolean isStatus(String status);
 
     public abstract int gatewayValue();
+
+    public abstract String getCandidateGroup();
 }
 
